@@ -13,7 +13,7 @@
  */
 
 export default class DynamicSpatialHash{
-  #cellSize = 1 / 128;
+  #cellSize = 1 / 32;
   #table = new Map();
 
   /**
@@ -21,9 +21,9 @@ export default class DynamicSpatialHash{
    * - The size in pixel of each cell in the hash table
    * - The smaller the number the more memory will be used, and the more cells to check for collisions (less efficient)
    * - The higher the number the less memory will be used, and the less cells to check for collisions, but the more objects will be in the same cell
-   * - The default value is 128 px, and cannot be less than 1, although it is recommended to be a power of 2 (1, 2, 4, 8, 16, 32, 64, 128, 256, 512, ...)
+   * - The default value is 32 px, and cannot be less than 1, although it is recommended to be a power of 2 (1, 2, 4, 8, 16, 32, 64, 128, 256, 512, ...)
    */
-  constructor(cellSize = 128){
+  constructor(cellSize = 32){
     this.cellSize = cellSize;
     this.overflow = 0; // Adds a amount os extra cells that the object can be in
   }
