@@ -13,7 +13,7 @@ Features:
 
 # Properties:
 
-- `cellSize`: The size of each cell in the hash table. The default value is 128 pixels.
+- `cellSize`: The size of each cell in the hash table. The default value is 32 pixels.
 - `overflow`: Adds a amount os extra cells that the object can be in around the object. The default value is 0.
 - `#table`: The hash table data structure mapping hash cell coordinates to objects.
 - `#cellSize`: The inverted size of the hash table cells, for performance reasons.
@@ -36,8 +36,8 @@ Example usage:
 ```javascript
 import DynamicSpatialHash from 'dynamic-spatial-hash';
 
-// Create a new instance of DynamicSpatialHash with a cell size of 128 pixels
-const hashTable = new DynamicSpatialHash(128);
+// Create a new instance of DynamicSpatialHash with a cell size of 32 pixels
+const hashTable = new DynamicSpatialHash(32);
 
 // Add an object to the hash table
 const object = { x: 10, y: 20, width: 32, height: 32 };
@@ -62,11 +62,28 @@ hashTable.clearAll();
 // Query nearby objects
 hashTable.query(object); // Returns a set of nearby objects
 ```
-# Test Run with 1000 Objects on a 1920x1080 Screen
+# Test Runs
+
+## 1000 Objects with 100x100 in size on a 1920x1080 Screen
+
+### Average results
 
 | Cell Size & Execution time | 16px | 32px | 64px | 128px | 256px | 512px |
-| ------------------------- | ---- | ---- | ---- | ----- | ----- | ----- |
-| Query non client object   | 22ms | 7ms  | 4ms  | 4ms   | 5ms   | 10ms  |
-| Query client object       | 22ms | 6ms  | 4ms  | 4ms   | 5ms   | 13ms  |
-| Update                    | 16ms | 3ms  | 1ms  | <1ms   | <1ms   | 1ms   |
+| -------------------------- | ---- | ---- | ---- | ----- | ----- | ----- |
+| Query non client object    | 22ms | 7ms  | 4ms  | 4ms   | 5ms   | 10ms  |
+| Query client object        | 22ms | 6ms  | 4ms  | 4ms   | 5ms   | 13ms  |
+| Update                     | 16ms | 3ms  | 1ms  | <1ms  | <1ms  | 1ms   |
 
+**Fastest:** 128px
+
+## 10000 Objects with 10x10 in size on a 1920x1080 Screen
+
+### Average results
+
+| Cell Size & Execution time | 16px | 32px | 64px | 128px | 256px | 512px  |
+| -------------------------- | ---- | ---- | ---- | ----- | ----- | ------ |
+| Query non client object    | 17ms | 17ms | 36ms | 99ms  | 284ms | 976ms  |
+| Query client object        | 14ms | 15ms | 34ms | 93ms  | 272ms | 1017ms |
+| Update                     | 10ms | 5ms  | 4ms  | 3ms   | 5ms   | 2ms    |
+
+**Fastest:** 32px
