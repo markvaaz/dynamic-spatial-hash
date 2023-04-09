@@ -62,3 +62,11 @@ hashTable.clearAll();
 // Query nearby objects
 hashTable.query(object); // Returns a set of nearby objects
 ```
+# Test Run with 1000 Objects on a 1920x1080 Screen
+
+| Cell Size & Execution time | 16px | 32px | 64px | 128px | 256px | 512px |
+| ------------------------- | ---- | ---- | ---- | ----- | ----- | ----- |
+| Query non client object   | 22ms | 7ms  | 4ms  | 4ms   | 5ms   | 10ms  |
+| Query client object       | 22ms | 6ms  | 4ms  | 4ms   | 5ms   | 13ms  |
+| Update                    | 16ms | 3ms  | 1ms  | <1ms   | <1ms   | 1ms   |
+
