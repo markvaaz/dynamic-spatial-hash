@@ -5,7 +5,7 @@
  * @description The DynamicSpatialHash class is a dynamic spatial hash table implementation in JavaScript,
  * designed to be used for collision detection and querying nearby objects in a 2D space.
  *
- * @version 1.0.0
+ * @version 1.1.0
  * @license MIT
  *
  * @author Mark Vaaz
