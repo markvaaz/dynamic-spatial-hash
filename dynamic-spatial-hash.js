@@ -179,7 +179,7 @@ export default class DynamicSpatialHash {
  * @returns {number} - A 32-bit integer hash representing the x, y coordinates
  */
   hash(x, y) {
-    return (x << 16) | (y & 0xFFFF); // 32 bits hash
+    return ((x * 16777619) ^ (y * 16777619)) >>> 0;; // 32 bits hash
   }
 
   /**
