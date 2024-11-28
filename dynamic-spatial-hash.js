@@ -181,15 +181,4 @@ export default class DynamicSpatialHash {
   hash(x, y) {
     return ((x * 16777619) ^ (y * 16777619)) >>> 0;; // 32 bits hash
   }
-
-  /**
-   * @method unhash - Creates an object with x and y coordinates from a 32-bit hash
-   * @param {number} hash - The 32-bit hash to unhash
-   * @returns {{x: number, y: number}}
-   */
-  unhash(hash) {
-    const x = hash >> 16;
-    const y = hash & 0xFFFF;
-    return { x, y };
-  }
 }
