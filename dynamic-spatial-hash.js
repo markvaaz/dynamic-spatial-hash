@@ -12,7 +12,7 @@
  * @see {@link https://github.com/markvaaz} GitHub
  */
 
-export default class DynamicSpatialHash{
+export default class DynamicSpatialHash {
   #cellSize = 1 / 32;
   #table = new Map();
 
@@ -23,18 +23,18 @@ export default class DynamicSpatialHash{
    * - The higher the number the less memory will be used, and the less cells to check for collisions, but the more objects will be in the same cell
    * - The default value is 32 px, and cannot be less than 1, although it is recommended to be a power of 2 (1, 2, 4, 8, 16, 32, 64, 128, 256, 512, ...)
    */
-  constructor(cellSize = 32){
+  constructor(cellSize = 32) {
     this.cellSize = cellSize;
     this.overflow = 0; // Adds a amount os extra cells that the object can be in
   }
 
-  set cellSize(value){
-    if(typeof value !== 'number') throw new TypeError('cellSize must be a number');
-    if(value <= 0) throw new RangeError('cellSize must be greater than 0');
+  set cellSize(value) {
+    if (typeof value !== 'number') throw new TypeError('cellSize must be a number');
+    if (value <= 0) throw new RangeError('cellSize must be greater than 0');
     this.#cellSize = 1 / value;
   }
 
-  get cellSize(){
+  get cellSize() {
     return this.#cellSize;
   }
 
@@ -44,13 +44,13 @@ export default class DynamicSpatialHash{
    * - The object the __spatialHashes property will be added to the object
    * @description Adds a object to the hash table
    */
-  add(object){
+  add(object) {
     const hashes = this.getHashFromObject(object);
 
     object.__spatialHashes = hashes;
 
     hashes.forEach(hash => {
-      if(!this.#table.has(hash)) this.#table.set(hash, new Set());
+      if (!this.#table.has(hash)) this.#table.set(hash, new Set());
       this.#table.get(hash).add(object);
     });
 
@@ -64,14 +64,14 @@ export default class DynamicSpatialHash{
    * - The object must have been added to the hash table
    * - The object must have a __spatialHashes property
    */
-  delete(object){
-    if(!object.__spatialHashes) return;
+  delete(object) {
+    if (!object.__spatialHashes) return;
     object.__spatialHashes.forEach(hash => {
-      if(!this.#table.has(hash)) return;
+      if (!this.#table.has(hash)) return;
 
       this.#table.get(hash).delete(object);
 
-      if(this.#table.get(hash).size === 0) this.clear(hash);
+      if (this.#table.get(hash).size === 0) this.clear(hash);
     });
 
     delete object.__spatialHashes;
@@ -85,7 +85,7 @@ export default class DynamicSpatialHash{
    * - The hash coordinate to get the objects from
    * @returns {Set<object>}
    */
-  get(hash){
+  get(hash) {
     return this.#table.get(hash);
   }
 
@@ -101,15 +101,15 @@ export default class DynamicSpatialHash{
    * - This is useful if you want to check for collisions
    * - This is useful if you want to check for nearby objects
    */
-  query(object){
+  query(object) {
     const hashes = object.__spatialHashes;
     const objects = new Set();
 
     hashes.forEach(hash => {
-      if(!this.#table.has(hash)) return;
+      if (!this.#table.has(hash)) return;
       this.#table.get(hash).forEach(otherobject => {
-        if(object === otherobject) return;
-       objects.add(otherobject)
+        if (object === otherobject) return;
+        objects.add(otherobject)
       });
     });
 
@@ -123,7 +123,7 @@ export default class DynamicSpatialHash{
    * @description Updates a  object in the hash table
    * - Removes the  object from the old hashes and adds it to the new hashes
    */
-  update(object){
+  update(object) {
     this.delete(object).add(object);
   }
 
@@ -134,7 +134,7 @@ export default class DynamicSpatialHash{
    * @description Clears a hash from the hash table
    * - This is useful if you want to clear a hash without having to get the  object
    */
-  clear(hash){
+  clear(hash) {
     this.#table.delete(hash);
   }
 
@@ -142,7 +142,7 @@ export default class DynamicSpatialHash{
    * @method clearAll - Clears all the hashes in the hash table
    * @description Clears all the hashes in the hash table
    */
-  clearAll(){
+  clearAll() {
     this.#table.clear();
   }
 
@@ -155,7 +155,7 @@ export default class DynamicSpatialHash{
    * @description Gets the hashes coordinates that the  object is in
    * - The hashes are in the format of 'x,y'
    */
-  getHashFromObject(object){
+  getHashFromObject(object) {
     const { x, y, width, height } = object;
     const hashes = new Set();
     const minX = Math.floor((x - width * 0.5) * this.#cellSize) - this.overflow;
@@ -163,12 +163,33 @@ export default class DynamicSpatialHash{
     const maxX = Math.floor((x + width * 0.5) * this.#cellSize) + this.overflow;
     const maxY = Math.floor((y + height * 0.5) * this.#cellSize) + this.overflow;
 
-    for(let x = minX; x <= maxX; x++){
-      for(let y = minY; y <= maxY; y++){
-        hashes.add(`${x},${y}`);
+    for (let x = minX; x <= maxX; x++) {
+      for (let y = minY; y <= maxY; y++) {
+        hashes.add(this.hash(x, y));
       }
     }
 
     return hashes;
+  }
+
+/**
+ * @method hash - Creates a 32-bit hash from x and y coordinates
+ * @param {number} x - The x coordinate
+ * @param {number} y - The y coordinate
+ * @returns {number} - A 32-bit integer hash representing the x, y coordinates
+ */
+  hash(x, y) {
+    return (x << 16) | (y & 0xFFFF); // 32 bits hash
+  }
+
+  /**
+   * @method unhash - Creates an object with x and y coordinates from a 32-bit hash
+   * @param {number} hash - The 32-bit hash to unhash
+   * @returns {{x: number, y: number}}
+   */
+  unhash(hash) {
+    const x = hash >> 16;
+    const y = hash & 0xFFFF;
+    return { x, y };
   }
 }
